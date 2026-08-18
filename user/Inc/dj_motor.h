@@ -97,7 +97,7 @@ typedef struct
 } DJMotor, *DJMotorPointer;
 
 /* ============ 对外接口 ============ */
-extern DJMotor DJmotor[];  
+extern DJMotor DJmotor[4];  
 
 void DJmotor_Init(void);                                 /* 电机初始化：参数/状态/PID 增益 */
 void DJmotor_Func(void);                                 /* 状态机：监测+模式切换+控制+发送 */

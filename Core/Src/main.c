@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "dj_motor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -105,7 +105,24 @@ int main(void)
   MX_UART7_Init();
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
+  /* 电机驱动初始化 */
+  DJmotor_Init();
 
+  HAL_TIM_Base_Start_IT(&htim6);
+
+  /* ---- FDCAN2 收包配置：只接受标准帧 0x200~0x20F → FIFO0 ---- */
+  FDCAN_FilterTypeDef sFilterConfig = {0};
+  sFilterConfig.IdType       = FDCAN_STANDARD_ID;
+  sFilterConfig.FilterIndex  = 0;
+  sFilterConfig.FilterType   = FDCAN_FILTER_MASK;
+  sFilterConfig.FilterConfig = FDCAN_FILTER_TO_RXFIFO0;
+  sFilterConfig.FilterID1    = 0x200U << 18;   /* ID：反馈帧高 7 位 = 0x200 */
+  sFilterConfig.FilterID2    = 0x7F0U << 18;   /* 掩码：只匹配高 7 位（0x200~0x20F） */
+  HAL_FDCAN_ConfigFilter(&hfdcan2, &sFilterConfig);
+  HAL_FDCAN_ConfigGlobalFilter(&hfdcan2, FDCAN_REJECT, FDCAN_REJECT,
+                               FDCAN_REJECT_REMOTE, FDCAN_REJECT_REMOTE);
+  HAL_FDCAN_Start(&hfdcan2);
+  HAL_FDCAN_ActivateNotification(&hfdcan2, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -178,6 +195,29 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM6)
+    {
+        DJmotor_Func();
+    }
+}
+
+/* FDCAN2 收包回调：收到电机反馈帧就解包 */
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
+{
+    FDCAN_RxHeaderTypeDef RxHeader;
+    uint8_t RxData[8];
+
+    if (hfdcan->Instance == FDCAN2)
+    {
+        if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK)
+        {
+            DJmotor_Receive(RxHeader, RxData);
+        }
+    }
+}
 
 /* USER CODE END 4 */
 
