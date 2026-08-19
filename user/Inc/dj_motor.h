@@ -9,7 +9,7 @@
 #define M2006_RATIO     36.0f    /* M2006 减速比 36:1 */
 #define M2006_PULSE_RD  8191U    /* 编码器每圈脉冲（反馈角度 0~8191） */
 #define M2006_CUR_LIMIT 4500     /* M2006 默认电流限幅 raw */
-#define USE_DJNUM  1U
+#define USE_DJNUM  4U
 
 typedef enum 
 {
@@ -97,12 +97,9 @@ typedef struct
 } DJMotor, *DJMotorPointer;
 
 /* ============ 对外接口 ============ */
-extern DJMotor DJmotor[4];  
+extern DJMotor DJmotor[USE_DJNUM];
 
-void DJmotor_Init(void);                                 /* 电机初始化：参数/状态/PID 增益 */
-void DJmotor_Func(void);                                 /* 状态机：监测+模式切换+控制+发送 */
-void DJmotor_Receive(FDCAN_RxHeaderTypeDef RxHeader, uint8_t *Rx_data); /* 收包解析 */
-void DJmotor_PID_Reload(DJMotorPointer motor, uint8_t which, float kp, float ki, float kd); /* 在线调参 */
-
-
+void DJmotor_Init(void);         /* 电机初始化：参数/状态/PID 增益 */
+void DJmotor_Func(void);         /* 状态机：监测+模式切换+控制+发送 */
+void DJmotor_Receive(FDCAN_RxHeaderTypeDef RxHeader, uint8_t *Rx_data) /*收包*/
 #endif 

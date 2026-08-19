@@ -7,7 +7,7 @@
 #define GETSIGN(x)      (((x) >= 0) ? 1 : -1)
 #define ZERO_DISTANCE   5  /* 脉冲差 < 5 视为撞到限位 */
 
-DJMotor DJmotor[4];//电机数量为1
+DJMotor DJmotor[4];/*电机数量4*/
 
 void DJmotor_Init(void)
 {
@@ -80,7 +80,7 @@ static void DJmotor_SetZero(DJMotorPointer motor)
 }
 
 /* 计算转子里程 */
-void DJmotor_AngleCalculate(DJMotorPointer motor)
+static void DJmotor_AngleCalculate(DJMotorPointer motor)
 {
     /* 相邻帧脉冲差 */
     motor->valNow.PulseGap = (int16_t)(motor->valNow.PulseRead - motor->valPre.PulseRead);
@@ -113,7 +113,7 @@ void DJmotor_AngleCalculate(DJMotorPointer motor)
 }
 
 /*传输*/
-void DJmotor_CurrentTransmit(DJMotorPointer motor)
+static void DJmotor_CurrentTransmit(DJMotorPointer motor)
 {
     FDCAN_TxHeaderTypeDef tx_header = {0};
     uint8_t tx_data[8] = {0};
@@ -142,6 +142,8 @@ void DJmotor_CurrentTransmit(DJMotorPointer motor)
 
     HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan2, &tx_header, tx_data);
 }
+
+
 
 /*接收*/
 void DJmotor_Receive(FDCAN_RxHeaderTypeDef RxHeader, uint8_t *Rx_data)
@@ -180,6 +182,34 @@ void DJmotor_Receive(FDCAN_RxHeaderTypeDef RxHeader, uint8_t *Rx_data)
 
 
 
+
+
+
+/* 模式切换 */
+static void DJmotor_SwitchMode(DJMotorPointer motor)
+{
+    if (motor->MODE_Set != motor->MODE_Cur)
+    {
+        motor->MODE_Cur = motor->MODE_Set;
+
+
+        motor->valSet.current_raw = 0;
+        motor->valSet.speed_rpm   = 0;
+
+
+        motor->valSet.angle_deg = motor->valNow.angle_deg;
+
+        pid_reset(&motor->posPID);
+        pid_reset(&motor->velPID);
+
+        motor->statusFlag.ZeroFlag     = false;
+        motor->statusFlag.OvertimeFlag = false;
+        motor->statusFlag.StuckFlag    = false;
+    }
+}
+
+
+
 /* 速度模式*/
 static void DJmotor_SpeedMode(DJMotorPointer motor)
 {
@@ -200,7 +230,6 @@ static void DJmotor_SpeedMode(DJMotorPointer motor)
     motor->valSet.current_raw = (int16_t)CLAMPPEAK(motor->valSet.current_raw,
             motor->param.CurrentLimit_raw);
 }
-
 
 
 /* 位置模式 */
@@ -239,32 +268,6 @@ static void DJmotor_PositionMode(DJMotorPointer motor)
     motor->valSet.current_raw = (int16_t)CLAMPPEAK(motor->valSet.current_raw,
             motor->param.CurrentLimit_raw);
 }
-
-
-
-/* 模式切换 */
-static void DJmotor_SwitchMode(DJMotorPointer motor)
-{
-    if (motor->MODE_Set != motor->MODE_Cur)
-    {
-        motor->MODE_Cur = motor->MODE_Set;
-
-
-        motor->valSet.current_raw = 0;
-        motor->valSet.speed_rpm   = 0;
-
-
-        motor->valSet.angle_deg = motor->valNow.angle_deg;
-
-        pid_reset(&motor->posPID);
-        pid_reset(&motor->velPID);
-
-        motor->statusFlag.ZeroFlag     = false;
-        motor->statusFlag.OvertimeFlag = false;
-        motor->statusFlag.StuckFlag    = false;
-    }
-}
-
 
 
 /* 寻零模式*/
@@ -380,7 +383,7 @@ void DJmotor_Func(void)
     }
 }
 
-void DJmotor_PID_Reload(DJMotorPointer motor, uint8_t which, float kp, float ki, float kd)
+static void DJmotor_PID_Reload(DJMotorPointer motor, uint8_t which, float kp, float ki, float kd)
 {
     if (which == 0U)
     {
