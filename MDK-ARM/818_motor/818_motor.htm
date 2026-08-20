@@ -3,7 +3,7 @@
 <title>Static Call Graph - [818_motor\818_motor.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image 818_motor\818_motor.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Wed Aug 19 14:44:25 2026
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Wed Aug 19 22:24:33 2026
 <BR><P>
 <H3>Maximum Stack Usage =        576 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -813,24 +813,6 @@ Global Symbols
 <P><STRONG><a name="[4]"></a>BusFault_Handler</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, stm32h7xx_it.o(.text.BusFault_Handler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32h723xx.o(RESET)
 </UL>
-<P><STRONG><a name="[aa]"></a>DJmotor_AngleCalculate</STRONG> (Thumb, 248 bytes, Stack size 16 bytes, dj_motor.o(.text.DJmotor_AngleCalculate))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = DJmotor_AngleCalculate &rArr; DJmotor_SetZero
-</UL>
-<BR>[Calls]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_SetZero
-</UL>
-<BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_Receive
-</UL>
-
-<P><STRONG><a name="[ac]"></a>DJmotor_CurrentTransmit</STRONG> (Thumb, 158 bytes, Stack size 64 bytes, dj_motor.o(.text.DJmotor_CurrentTransmit))
-<BR><BR>[Stack]<UL><LI>Max Depth = 128 + Unknown Stack Size
-<LI>Call Chain = DJmotor_CurrentTransmit &rArr; HAL_FDCAN_AddMessageToTxFifoQ &rArr; FDCAN_CopyMessageToRAM
-</UL>
-<BR>[Calls]<UL><LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FDCAN_AddMessageToTxFifoQ
-<LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
-</UL>
-<BR>[Called By]<UL><LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_Func
-</UL>
-
 <P><STRONG><a name="[af]"></a>DJmotor_Func</STRONG> (Thumb, 410 bytes, Stack size 32 bytes, dj_motor.o(.text.DJmotor_Func))
 <BR><BR>[Stack]<UL><LI>Max Depth = 160 + Unknown Stack Size
 <LI>Call Chain = DJmotor_Func &rArr; DJmotor_CurrentTransmit &rArr; HAL_FDCAN_AddMessageToTxFifoQ &rArr; FDCAN_CopyMessageToRAM
@@ -1401,7 +1383,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_UART7_Init
 </UL>
 
-<P><STRONG><a name="[fe]"></a>HAL_UART_MspInit</STRONG> (Thumb, 168 bytes, Stack size 224 bytes, usart.o(.text.HAL_UART_MspInit))
+<P><STRONG><a name="[fe]"></a>HAL_UART_MspInit</STRONG> (Thumb, 170 bytes, Stack size 224 bytes, usart.o(.text.HAL_UART_MspInit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 368 + Unknown Stack Size
 <LI>Call Chain = HAL_UART_MspInit &rArr; HAL_RCCEx_PeriphCLKConfig &rArr; RCCEx_PLL3_Config
 </UL>
@@ -1688,11 +1670,19 @@ Local Symbols
 <LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UARTEx_SetTxFifoThreshold
 </UL>
 
+<P><STRONG><a name="[aa]"></a>DJmotor_AngleCalculate</STRONG> (Thumb, 248 bytes, Stack size 16 bytes, dj_motor.o(.text.DJmotor_AngleCalculate))
+<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = DJmotor_AngleCalculate &rArr; DJmotor_SetZero
+</UL>
+<BR>[Calls]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_SetZero
+</UL>
+<BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_Receive
+</UL>
+
 <P><STRONG><a name="[ab]"></a>DJmotor_SetZero</STRONG> (Thumb, 28 bytes, Stack size 4 bytes, dj_motor.o(.text.DJmotor_SetZero))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = DJmotor_SetZero
 </UL>
-<BR>[Called By]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_AngleCalculate
-<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_ZeroMode
+<BR>[Called By]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_ZeroMode
+<LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_AngleCalculate
 </UL>
 
 <P><STRONG><a name="[b0]"></a>DJmotor_Monitor</STRONG> (Thumb, 224 bytes, Stack size 8 bytes, dj_motor.o(.text.DJmotor_Monitor))
@@ -1731,6 +1721,16 @@ Local Symbols
 <BR>[Calls]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pid_calculate
 <LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pid_reset
 <LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_SetZero
+</UL>
+<BR>[Called By]<UL><LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_Func
+</UL>
+
+<P><STRONG><a name="[ac]"></a>DJmotor_CurrentTransmit</STRONG> (Thumb, 158 bytes, Stack size 64 bytes, dj_motor.o(.text.DJmotor_CurrentTransmit))
+<BR><BR>[Stack]<UL><LI>Max Depth = 128 + Unknown Stack Size
+<LI>Call Chain = DJmotor_CurrentTransmit &rArr; HAL_FDCAN_AddMessageToTxFifoQ &rArr; FDCAN_CopyMessageToRAM
+</UL>
+<BR>[Calls]<UL><LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_FDCAN_AddMessageToTxFifoQ
+<LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DJmotor_Func
 </UL>

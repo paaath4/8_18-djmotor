@@ -101,5 +101,6 @@ extern DJMotor DJmotor[USE_DJNUM];
 
 void DJmotor_Init(void);         /* 电机初始化：参数/状态/PID 增益 */
 void DJmotor_Func(void);         /* 状态机：监测+模式切换+控制+发送 */
-void DJmotor_Receive(FDCAN_RxHeaderTypeDef RxHeader, uint8_t *Rx_data) /*收包*/
+void DJmotor_Receive(FDCAN_RxHeaderTypeDef RxHeader, uint8_t *Rx_data); /*收包*/
+
 #endif 
