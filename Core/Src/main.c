@@ -108,7 +108,7 @@ int main(void)
   /* 电机驱动初始化 */
   DJmotor_Init();
 
-  HAL_TIM_Base_Start_IT(&htim6);
+  HAL_TIM_Base_Start_IT(&htim2);
 
   /* ---- FDCAN2 收包配置：只接受标准帧 0x200~0x20F → FIFO0 ---- */
   FDCAN_FilterTypeDef sFilterConfig = {0};
@@ -196,14 +196,6 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == TIM6)
-    {
-        DJmotor_Func();
-    }
-}
-
 /* FDCAN2 收包回调：收到电机反馈帧就解包 */
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 {
@@ -261,7 +253,10 @@ void MPU_Config(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
-
+  if (htim->Instance == TIM2)
+  {
+    DJmotor_Func();
+  }
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM1)
   {
